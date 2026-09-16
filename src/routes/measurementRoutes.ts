@@ -1,7 +1,7 @@
 import Router = require("express")
 import { getAllMeasurement, getASingleMeasurement, createAMeasurement, deleteAMeasurement, getLatestMeasurement, getMeasurementStats } from "../controllers/measurementController"
 
-const measurementRouter = Router()
+export const measurementRouter = Router()
 
 measurementRouter.get("/api/measurements", getAllMeasurement)
 measurementRouter.get("/api/measurement/:id", getASingleMeasurement)

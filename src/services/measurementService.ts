@@ -38,7 +38,7 @@ export const getASingleMeasurement = async () => {
     })
 }
 
-export const createAMeasurement = async (download_mbps: string, upload_mbps: string, ping_ms: number) => {
+export const createAMeasurement = async (download_mbps: number, upload_mbps: number, ping_ms: number) => {
     const newMeasurement = await prisma.Measurement.create({
         data: {
             download_mbps: download_mbps,
