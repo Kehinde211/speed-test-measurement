@@ -11,6 +11,6 @@ export default defineConfig({
   },
   engine: "classic",
   datasource: {
-    url: env("DATABASE_URL"),
+    url: env("postgresql://kehinde:Morayo%4012@localhost:5432/mydb?schema=public"),
   },
 });
