@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express"
 import * as MeasurementService from "../services/measurementService"
+import { id } from "zod/v4/locales"
 
 export const getAllMeasurement = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -7,7 +8,8 @@ export const getAllMeasurement = async (req: Request, res: Response, next: NextF
 
         if (!measurementDetails) {
             return res.status(400).json({
-                message: "Measurement Details not found"
+                message: "Measurement Details not found",
+                success: false,
             })
         }
         return res.status(200).json({
@@ -21,8 +23,16 @@ export const getAllMeasurement = async (req: Request, res: Response, next: NextF
 }
 
 export const getASingleMeasurement = async (req: Request, res: Response, next: NextFunction) => {
-    const singleMeasurement = await MeasurementService.getASingleMeasurement()
-    return singleMeasurement;
+    try {
+        const id  = req.params;
+    const singleMeasurement = await MeasurementService.getASingleMeasurement(Number(id))
+    return res.status(200).json({
+        data: singleMeasurement,
+        success: true,
+    });
+    } catch (err) {
+        next(err)
+    }
 }
 
 export const createAMeasurement = async (req: Request, res: Response, next: NextFunction) => {
@@ -49,12 +59,12 @@ export const createAMeasurement = async (req: Request, res: Response, next: Next
 export const deleteAMeasurement = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const deletedMeasurement = await MeasurementService.deleteMeasurement(Number(id));
+        const deletedMeasurement = await MeasurementService.deleteMeasurement((id));
 
     if (!deletedMeasurement) {
         return res.status(400).json({
             success: false,
-            message: "Measurement Failed to be deleted"
+            message: "Deleted Measurement could not be found"
         })
     }
     return res.status(200).json({
@@ -71,7 +81,7 @@ export const getLatestMeasurement = async (req: Request, res: Response, next: Ne
     try {
         const latestMeasurement = await MeasurementService.getLatestMeasurement()
 
-        if (!latestMeasurement || latestMeasurement.id === 0) {
+        if (!latestMeasurement || latestMeasurement.id === "0") {
             return res.status(400).json({
                 message: "Latest Measurement not found"
             })
@@ -90,7 +100,7 @@ export const getMeasurementStats = async (req: Request, res: Response, next: Nex
     try {
         const measurementStats = await MeasurementService.getMeasurementStats()
 
-        if (!measurementStats || measurementStats === 0) {
+        if (!measurementStats) {
             return res.status(400).json({
                 success: false,
                 message: "Measurement Stats data retrieved unsuccessfully"

@@ -1,13 +1,13 @@
-import Router = require("express")
+import { Router } from "express"
 import { getAllMeasurement, getASingleMeasurement, createAMeasurement, deleteAMeasurement, getLatestMeasurement, getMeasurementStats } from "../controllers/measurementController"
 
-export const measurementRouter = Router()
+const measurementRouter = Router()
 
-measurementRouter.get("/api/measurements", getAllMeasurement)
-measurementRouter.get("/api/measurement/:id", getASingleMeasurement)
-measurementRouter.post("/api/measurements", createAMeasurement)
-measurementRouter.delete("/api/measurements/:id", deleteAMeasurement)
-measurementRouter.get("/api/measurements/latest", getLatestMeasurement)
-measurementRouter.get("/api/measurement/stats", getMeasurementStats)
+measurementRouter.get("/measurements", getAllMeasurement)
+measurementRouter.get("/measurement/:id", getASingleMeasurement)
+measurementRouter.post("/measurements", createAMeasurement)
+measurementRouter.delete("/measurements/:id", deleteAMeasurement)
+measurementRouter.get("/measurements/latest", getLatestMeasurement)
+measurementRouter.get("/measurement/stats", getMeasurementStats)
 
-module.exports = measurementRouter;
+export default measurementRouter;

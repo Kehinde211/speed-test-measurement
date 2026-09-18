@@ -1,9 +1,7 @@
 import bcrypt from "bcryptjs"
 import passport from "passport"
 import { Strategy as LocalStrategy } from "passport-local"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import prisma from "../lib/prisma";
 
 passport.use(new LocalStrategy(
     { usernameField: "email" },
@@ -12,12 +10,12 @@ passport.use(new LocalStrategy(
             const user = await prisma.user.findUnique({ where: { email } })
 
             if (!user) {
-                return done(null, false, { message: "Incorrect email or password" })
+                return done(null, false, { message: "Incorrect email" })
             }
 
             const isMatch = await bcrypt.compare(password, user.password)
             if (!isMatch) {
-                return done(null, false, { message: "Incorrect email or password" })
+                return done(null, false, { message: "Incorrect password" })
             }
             done(null, user)
         } catch (err) {
@@ -27,14 +25,16 @@ passport.use(new LocalStrategy(
 ))
 
 passport.serializeUser((user: any, done) => {
-    done(null, user.id)
-})
+  done(null, user.id);
+});
 
-passport.deserializeUser(async (id: number, done) => {
-    try {
-        const user = await prisma.user.findUnique({ where: { id} })
-        done(null, user)
-    } catch (err) {
-        done(err, null)
-    }
-}) 
+passport.deserializeUser(async (id: number | string, done) => {
+  try {
+    const user = await prisma.user.findUnique({ 
+      where: { id: Number(id) } // 
+    });
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
+});
